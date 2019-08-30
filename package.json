@@ -10,7 +10,6 @@
   "dependencies": {
     "@better-scroll/core": "^2.0.0-alpha.20",
     "@better-scroll/wheel": "^2.0.0-alpha.20",
-    "better-scroll": "^1.15.2",
     "core-js": "^2.6.5",
     "vue": "^2.6.10"
   },
