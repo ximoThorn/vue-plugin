@@ -101,7 +101,6 @@ BScroll.use(Wheel);
         this.$emit('update:pickerVisible', false);
       },
       confirm() {
-        console.log(this.wheels[0].getSelectedIndex())
         let _arrItem = [];
         let _arrIndex = [0, 0, 0];
         for (let i = 0, len = this.wheels.length; i < len; i++) {
@@ -113,11 +112,9 @@ BScroll.use(Wheel);
         this.hide();
       },
       initWheel() {
-        
         if (!this.$refs.wheelWrap) {
           return
         }
-        
         const childs = this.$refs.wheelWrap.children;
         for (let i = 0, len = childs.length; i < len; i++) {
           this.createWheel(childs[i], i);
@@ -141,6 +138,9 @@ BScroll.use(Wheel);
       wheelTo(i, j) {
         this.wheels[i] && this.wheels[i].wheelTo(j);
       },
+    },
+    beforeDestroy() {
+      this.hide();
     },
     watch: {
       pickerVisible(flag) {
