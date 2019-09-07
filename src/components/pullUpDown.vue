@@ -8,14 +8,14 @@
         <div
           v-if="pullUpIngFlag"
           class="ace-up-tips">
-          <span>pulUp loadeMore</span>
+          <span>{{pullUpText}}</span>
         </div>
         <div
           class="ace-up-end"
           v-else>
           <slot name="pullUp"></slot>
           <img
-            v-if="$slots.pullUp"
+            v-if="!$slots.pullUp"
             src="../assets/loading.gif" alt="">
         </div>
       </div>
@@ -33,7 +33,7 @@
         class="ace-down-loading">
         <slot name="pullDown"></slot>
         <img
-          v-if="$slots.pullDown"
+          v-if="!$slots.pullDown"
           src="../assets/loading.gif" alt="">
       </div>
     </div>
@@ -58,11 +58,27 @@
       },
       pullDown: {
         type: Boolean,
-        degault: false,
+        default: false,
       },
       pullUp: {
         type: Boolean,
-        degault: false,
+        default: false,
+      },
+      pullUpText: {
+        type: String,
+        default: 'pulUp loadeMore',
+      },
+      pullUpThreshold: { // 触发上拉加载更多的上拉距离
+        type: Number,
+        default: 50,
+      },
+      pullDownThreshold: { // 触发下拉加载时的下拉距离
+        type: Number,
+        default: 90,
+      },
+      pullDownSpringback: { // 下拉加载后的回弹距离
+        type: Number,
+        default: 40,
       },
     },
     components: {
@@ -81,7 +97,6 @@
       this.pullDownInitTop = -50;
       this.$nextTick(() => {
         this._initScroll();
-        console.log(this, 'this')
       });
     },
     methods: {
@@ -90,12 +105,18 @@
         this.scroll = new BScroll(acePUDownWrap, {
           probeType : 3,
           scrollY: true,
-          pullUpLoad: this.pullUp,
-          pullDownRefresh: this.pullDown,
+          pullUpLoad: this.pullUp && {
+            threshold: 0 - this.pullUpThreshold,
+          },
+          pullDownRefresh: this.pullDown && {
+            threshold: this.pullDownThreshold,
+            stop: this.pullDownSpringback
+          },
         })
         this.pullDown && this._pullDownRefresh()
+        this.pullUp && this._pullUpLoad()
       },
-      _pullDownRefresh() {//开启下拉刷新后监听下拉动作
+      _pullDownRefresh() {//开启下拉刷新后监听下拉松手动作
         this.scroll.on('pullingDown', () => {
           this.beforePullDownFlag = false;
           this.$emit('pullingDown');//下拉刷新后执行父组件的pullingDown方法
@@ -109,19 +130,28 @@
           }
         });
       },
+      _pullUpLoad() {//开启上拉加载后监听上拉动作
+        this.scroll.on('pullingUp', () => {
+          this.pullUpIngFlag = false;
+          this.$emit('pullingUp');//上拉加载后执行父组件的pullingUp方法
+        });
+      },
       fourceUpdate() {
         this.pullDownStyle = `top:${this.pullDownInitTop}px`;
+        this.beforePullDownFlag = true;
+        this.pullUpIngFlag = true;
         this.scroll.finishPullDown();
+        this.scroll.finishPullUp();
         setTimeout(() => {
-          this.pullDownStyle = `top:${this.pullDownInitTop}px`;
-          this.beforePullDownFlag = true;
           this.scroll.refresh();//better-scroll刷新
         }, this.scroll.options.bounceTime); // bounceTime 设置的回弹动画时间
       }
     },
     watch: {
-      loadData(newVal) {
-        this.fourceUpdate();
+      loadData() {
+        this.$nextTick(() => {
+          this.fourceUpdate()
+        });
       },
     },
   }
@@ -136,7 +166,6 @@
     bottom: 0;
     right: 0;
     .ace-list-wrap {
-      min-height: 1000px;
       .ace-up-wrap {
         .ace-up-tips, .ace-up-end {
           height: 50px;

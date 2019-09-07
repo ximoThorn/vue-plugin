@@ -2,6 +2,9 @@
   <div>
     <pullUpDown
       :loadData="lists"
+      :pullUp="true"
+      :pullDown="true"
+      @pullingUp="pullingUp"
       @pullingDown="pullingDown">
       <ul class="list-wrap">
         <li 
@@ -10,6 +13,11 @@
           this is {{index}}
         </li>
       </ul>
+      <template v-slot:pullUp>
+        <span>
+          loading...
+        </span>
+      </template>
     </pullUpDown>
   </div>
 </template>
@@ -27,6 +35,11 @@
     },
     methods: {
       pullingDown() {
+        setTimeout(() => { // 异步
+          this.lists++;
+        }, 2000);
+      },
+      pullingUp() {
         setTimeout(() => { // 异步
           this.lists++;
         }, 2000);
