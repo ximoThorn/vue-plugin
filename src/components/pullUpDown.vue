@@ -136,22 +136,22 @@
           this.$emit('pullingUp');//上拉加载后执行父组件的pullingUp方法
         });
       },
-      fourceUpdate() {
-        this.pullDownStyle = `top:${this.pullDownInitTop}px`;
-        this.beforePullDownFlag = true;
-        this.pullUpIngFlag = true;
-        this.scroll.finishPullDown();
-        this.scroll.finishPullUp();
-        setTimeout(() => {
-          this.scroll.refresh();//better-scroll刷新
-        }, this.scroll.options.bounceTime); // bounceTime 设置的回弹动画时间
+      fourceUpdate() { // 在异步加载之后如果数据没有更新，需要调用此方法重新初始化滚动，数据有更新的话则不必调用
+        this.$nextTick(() => {
+          this.pullDownStyle = `top:${this.pullDownInitTop}px`;
+          this.beforePullDownFlag = true;
+          this.pullUpIngFlag = true;
+          this.scroll.finishPullDown();
+          this.scroll.finishPullUp();
+          setTimeout(() => {
+            this.scroll.refresh();//better-scroll刷新
+          }, this.scroll.options.bounceTime); // bounceTime 设置的回弹动画时间
+        });
       }
     },
     watch: {
       loadData() {
-        this.$nextTick(() => {
-          this.fourceUpdate()
-        });
+        this.fourceUpdate();
       },
     },
   }
