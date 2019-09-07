@@ -53,14 +53,14 @@
   export default {
     name: 'pullUpDown',
     props: {
-      loadData: {
+      loadData: { // 列表数据
         type: Number,
       },
-      pullDown: {
+      pullDown: { // 是否开启下拉刷新
         type: Boolean,
         default: false,
       },
-      pullUp: {
+      pullUp: { // 是否开启上拉加载更多
         type: Boolean,
         default: false,
       },
