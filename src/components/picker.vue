@@ -152,6 +152,13 @@ BScroll.use(Wheel);
           this.initWheel();
         });
       },
+      wheelDatas() {
+        this.$nextTick(() => {
+          for (let i = 0, len = this.wheels.length; i < len; i++) {
+            this.wheels[i] && this.wheels[i].refresh();
+          };
+        })
+      }
     },
   }
 </script>
