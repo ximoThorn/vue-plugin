@@ -2,9 +2,14 @@
   <div
     ref="acePUDownWrap"
     class="ace-pull-up-down-wrap">
-    <div class="ace-list-wrap">
+    <div
+      ref="contentWrap"
+      class="ace-list-wrap">
       <slot></slot>
-      <div class="ace-up-wrap">
+      <div
+        v-if="pullUp"
+        v-show="pullUpInitHeightFlag"
+        class="ace-up-wrap">
         <div
           v-if="pullUpIngFlag"
           class="ace-up-tips">
@@ -21,6 +26,7 @@
       </div>
     </div>
     <div
+      v-if="pullDown"
       :style="pullDownStyle"
       class="ace-pull-down-wrap">
       <div
@@ -91,12 +97,14 @@
         pullDownEnd: false,
         bubbleY: 0,
         pullDownStyle: '',
+        pullUpInitHeightFlag: true,
       };
     },
     mounted() {
       this.pullDownInitTop = -50;
       this.$nextTick(() => {
         this._initScroll();
+        this.judgeHeight();
       });
     },
     methods: {
@@ -147,7 +155,16 @@
             this.scroll.refresh();//better-scroll刷新
           }, this.scroll.options.bounceTime); // bounceTime 设置的回弹动画时间
         });
-      }
+      },
+      judgeHeight() {
+        const aceWrapHeight = this.$refs.acePUDownWrap.clientHeight;
+        const aceContentHeight = this.$refs.contentWrap.clientHeight;
+        if (aceContentHeight >= aceWrapHeight) {
+          this.pullUpInitHeightFlag = true;
+          return;
+        }
+        this.pullUpInitHeightFlag = false;
+      },
     },
     watch: {
       loadData() {
