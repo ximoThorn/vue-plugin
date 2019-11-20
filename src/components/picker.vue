@@ -105,8 +105,10 @@ BScroll.use(Wheel);
         let _arrIndex = [0, 0, 0];
         for (let i = 0, len = this.wheels.length; i < len; i++) {
           const location = this.wheels[i].getSelectedIndex();
-          _arrItem.push(this.wheelDatas[i][location]);
-          _arrIndex[i] = location;
+          if (this.wheelDatas[i][location]) {
+            _arrItem.push(this.wheelDatas[i][location]);
+            _arrIndex[i] = location;
+          };
         };
         this.$emit('confirm', _arrItem, _arrIndex);
         this.hide();
