@@ -132,7 +132,7 @@ BScroll.use(Wheel);
             },
             probeType: 3
           });
-          this.wheels[i].on('scrollEnd', () => {//实时监听滚动后所选的项，传给父组件
+          this.wheels[i].on('scrollEnd', () => {//实时监听滚动后所选的项
             this.$emit('change', i, this.wheels[i].getSelectedIndex());
           });
         }
