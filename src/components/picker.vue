@@ -130,7 +130,8 @@ BScroll.use(Wheel);
             wheel: {
               selectedIndex: this.selectIndexs[i],
             },
-            probeType: 3
+            probeType: 2,
+            useTransition: false,
           });
           this.wheels[i].on('scrollEnd', () => {//实时监听滚动后所选的项
             this.$emit('change', i, this.wheels[i].getSelectedIndex());
